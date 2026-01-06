@@ -99,7 +99,7 @@ const App: React.FC = () => {
   const [pythonOutput, setPythonOutput] = useState<string>("");
   const [executing, setExecuting] = useState(false);
 
-  // Fix: replace NodeJS.Timeout with any for browser environment compatibility
+  // replace NodeJS.Timeout with any for browser environment compatibility
   const typingTimeoutRef = useRef<any>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const activeFile = files[activeFileId];
@@ -167,7 +167,6 @@ const App: React.FC = () => {
 
   const downloadProject = async () => {
     const zip = new JSZip();
-    // Fix: cast Object.values(files) to CodeFile[] to resolve unknown type error
     (Object.values(files) as CodeFile[]).forEach(file => zip.file(file.name, file.content));
     const content = await zip.generateAsync({ type: "blob" });
     const url = window.URL.createObjectURL(content);
@@ -273,7 +272,6 @@ const App: React.FC = () => {
   };
 
   const generateCombinedPreview = () => {
-    // Fix: cast Object.values(files) to CodeFile[] to ensure properties like name and content are accessible
     const htmlFile = (Object.values(files) as CodeFile[]).find(f => f.name === 'index.html');
     const cssFiles = (Object.values(files) as CodeFile[]).filter(f => f.name.endsWith('.css')).map(f => `<style>${f.content}</style>`).join('\n');
     const jsFiles = (Object.values(files) as CodeFile[]).filter(f => f.name.endsWith('.js')).map(f => `<script>${f.content}</script>`).join('\n');
@@ -319,7 +317,6 @@ const App: React.FC = () => {
               </div>
             )}
             <div className="flex items-center gap-2 px-4 py-2 text-slate-500 text-[10px] font-bold tracking-wider uppercase opacity-60">Proyecto</div>
-            {/* Fix: cast Object.entries(files) to [string, CodeFile][] to resolve unknown type errors on file object */}
             {(Object.entries(files) as [string, CodeFile][]).map(([id, file]) => (
               <div 
                 key={id} 
