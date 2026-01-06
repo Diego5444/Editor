@@ -99,7 +99,7 @@ const App: React.FC = () => {
   const [pythonOutput, setPythonOutput] = useState<string>("");
   const [executing, setExecuting] = useState(false);
 
-  // replace NodeJS.Timeout with any for browser environment compatibility
+  // use any for browser environment compatibility
   const typingTimeoutRef = useRef<any>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const activeFile = files[activeFileId];
