@@ -1,0 +1,8 @@
+{
+  "name": "DroidCode AI Editor",
+  "description": "A mobile-first advanced code editor for HTML, CSS, JS, and Python with AI-powered suggestions, refactoring, and real-time preview.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
