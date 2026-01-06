@@ -99,7 +99,8 @@ const App: React.FC = () => {
   const [pythonOutput, setPythonOutput] = useState<string>("");
   const [executing, setExecuting] = useState(false);
 
-  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // Fix: replace NodeJS.Timeout with any for browser environment compatibility
+  const typingTimeoutRef = useRef<any>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const activeFile = files[activeFileId];
 
@@ -166,7 +167,8 @@ const App: React.FC = () => {
 
   const downloadProject = async () => {
     const zip = new JSZip();
-    Object.values(files).forEach(file => zip.file(file.name, file.content));
+    // Fix: cast Object.values(files) to CodeFile[] to resolve unknown type error
+    (Object.values(files) as CodeFile[]).forEach(file => zip.file(file.name, file.content));
     const content = await zip.generateAsync({ type: "blob" });
     const url = window.URL.createObjectURL(content);
     const link = document.createElement('a');
@@ -271,9 +273,10 @@ const App: React.FC = () => {
   };
 
   const generateCombinedPreview = () => {
-    const htmlFile = Object.values(files).find(f => f.name === 'index.html');
-    const cssFiles = Object.values(files).filter(f => f.name.endsWith('.css')).map(f => `<style>${f.content}</style>`).join('\n');
-    const jsFiles = Object.values(files).filter(f => f.name.endsWith('.js')).map(f => `<script>${f.content}</script>`).join('\n');
+    // Fix: cast Object.values(files) to CodeFile[] to ensure properties like name and content are accessible
+    const htmlFile = (Object.values(files) as CodeFile[]).find(f => f.name === 'index.html');
+    const cssFiles = (Object.values(files) as CodeFile[]).filter(f => f.name.endsWith('.css')).map(f => `<style>${f.content}</style>`).join('\n');
+    const jsFiles = (Object.values(files) as CodeFile[]).filter(f => f.name.endsWith('.js')).map(f => `<script>${f.content}</script>`).join('\n');
     return `${htmlFile?.content || ''}${cssFiles}${jsFiles}`;
   };
 
@@ -316,7 +319,8 @@ const App: React.FC = () => {
               </div>
             )}
             <div className="flex items-center gap-2 px-4 py-2 text-slate-500 text-[10px] font-bold tracking-wider uppercase opacity-60">Proyecto</div>
-            {Object.entries(files).map(([id, file]) => (
+            {/* Fix: cast Object.entries(files) to [string, CodeFile][] to resolve unknown type errors on file object */}
+            {(Object.entries(files) as [string, CodeFile][]).map(([id, file]) => (
               <div 
                 key={id} 
                 onClick={() => { setActiveFileId(id); if(!openFileIds.includes(id)) setOpenFileIds(p => [...p, id]); }} 
@@ -529,7 +533,7 @@ const App: React.FC = () => {
                       </div>
                     )}
                   </div>
-                  {!executing && <div className="mt-8 flex items-center gap-3 text-emerald-500/40"><span>>>></span> <div className="w-3 h-6 bg-emerald-500/30 animate-pulse" /></div>}
+                  {!executing && <div className="mt-8 flex items-center gap-3 text-emerald-500/40"><span>{">>>"}</span> <div className="w-3 h-6 bg-emerald-500/30 animate-pulse" /></div>}
                 </div>
               </div>
             ) : (
